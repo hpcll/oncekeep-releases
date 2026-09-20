@@ -1,59 +1,62 @@
 # 记续 / Oncekeep — Public Beta Downloads
 
-This repository contains public engineering-beta downloads for Oncekeep. The development source repository remains private during first-user testing. Distributed application bundles contain the runtime code needed to run locally, but no personal Vault, credentials or model weights.
+Public engineering-beta downloads for Apple Silicon Macs. The development repository remains private. Bundles contain application runtime code, but no personal Vault, credentials or model weights. **Unsigned and not notarized; real second-Mac acceptance is still pending.**
 
-## Install v1.8.0-beta.4 on an Apple Silicon Mac
+## One-line installation — v1.8.0-beta.5
 
-Open Terminal as your normal user, **without sudo**, and run:
+Enable **iCloud Drive → Sync this Mac** in macOS System Settings and open iCloud Drive in Finder. Run in Terminal as your normal user, **without sudo**:
 
 ```bash
-curl -fsSL https://github.com/hpcll/oncekeep-releases/releases/download/v1.8.0-beta.4/install-oncekeep.sh | bash
+curl -fsSL https://github.com/hpcll/oncekeep-releases/releases/download/v1.8.0-beta.5/install-oncekeep.sh | bash
 ```
 
-**Use the fixed URL above. `releases/latest` still points to the older stable channel, not this beta.** No source checkout or preinstalled Node/Python is required.
+[Release notes / downloads](https://github.com/hpcll/oncekeep-releases/releases/tag/v1.8.0-beta.5) · [Second-Mac acceptance checklist](first-user-mac-acceptance.md)
 
-[Release notes and downloads](https://github.com/hpcll/oncekeep-releases/releases/tag/v1.8.0-beta.4) · [Second-Mac acceptance checklist](first-user-mac-acceptance.md)
+**Use this fixed URL. `releases/latest` is still the older stable channel.** No source checkout or preinstalled Node/Python is required.
 
-The script checks the platform, downloads the versioned archive and checksum over HTTPS, verifies SHA-256, installs bundled Node/Python plus a user-level background service, and opens the local admin page. Existing installations take the upgrade/rollback path; back up first.
+## New installations default to your iCloud Drive
 
-- Program: `~/.local/share/localbrain`
-- Default memory Vault: `~/Documents/Oncekeep`
-- Reopen the admin page after installation:
+- Memory Vault: **iCloud Drive / Oncekeep**, physically `~/Library/Mobile Documents/com~apple~CloudDocs/Oncekeep`.
+- Program, databases, indexes, spool, logs, models and credentials: local `~/.local/share/localbrain`.
+- Memory files, archived attachments and sync events in the Vault are synchronized by macOS to **your own iCloud**. External attachment references are not automatically uploaded.
+
+The installer checks account availability, existing directory permissions and macOS's iCloud directory marker. If these checks fail, installation stops with an actionable message. It never silently falls back to local storage, creates a fake CloudDocs root or changes system settings. It does not search or merge other libraries such as Obsidian/LocalBrain.
+
+**Saving locally is not proof that uploading completed.** Network, cloud quota and paused sync can delay or prevent upload. Check Finder and the other device for completion. iCloud synchronization is not an independent backup.
+
+If iCloud Drive/Oncekeep already contains the workspace under the same account, that vault ID is reused and this Mac gets its own device ID. Wait for existing files to fully download before installing on another Mac. Never copy another device's config/state/SQLite or entire installation. Automatic writes use device partitions; ordinary manual edits can still conflict.
+
+## Existing installations keep their location
+
+Upgrading beta.4 or older **does not move its Vault to iCloud**. Upgrade/retained-data reinstall preserve the stored path and identity. Conflicting location overrides are refused; migration must be a separate backed-up operation. If you have not installed before, the new default applies automatically.
+
+## Explicit alternative
+
+To choose the Documents directory instead of iCloud:
+
+```bash
+curl -fsSL https://github.com/hpcll/oncekeep-releases/releases/download/v1.8.0-beta.5/install-oncekeep.sh | ONCEKEEP_STORAGE=local bash
+```
+
+This uses `~/Documents/Oncekeep`; whether Documents syncs depends on macOS settings. For another absolute path, use `ONCEKEEP_VAULT` instead; do not set both options.
+
+## After installation
+
+The admin page opens automatically. To reopen it later:
 
 ```bash
 ~/.local/share/localbrain/app/bin/oncekeep ui
 ```
 
-### Choose a shared Vault before installing
+1. Check the version, Vault location and service status.
+2. Explicitly download and enable the local quantized multilingual MiniLM model (129.1 MiB, at least 300 MiB free recommended). Progress, hashes, loading and retries are shown. No embedding API key or per-use fee. Until ready, saving/browsing work, but semantic retrieval and new chunk indexing do not; keyword retrieval may be incomplete.
+3. Review detected Agents and configuration/history-import previews, then confirm only the items you want. Restart/trust the connector if required.
+4. Use harmless unique markers to test cross-Agent/cross-Mac recall, then reboot and test persistence. See the checklist for backups and isolated restore.
 
-For the first run, choose either a new local Vault (default) or your already-synced iCloud Vault. The default local Vault does **not** automatically connect to the other Mac's library.
+Cloud filtering remains **optional and off by default**. If enabled, queries and limited redacted candidate snippets go to your configured provider and may incur charges. Redaction is not a guarantee of no sensitive content. Model downloads contact Hugging Face/CDN for files, not to send memories. History processing runs locally; writing those memories into iCloud does synchronize the resulting files.
 
-If your existing iCloud Vault is at the example path below, wait until its files are fully downloaded on the second Mac, then run:
+Real iCloud upload/download, login/reboot and Agent acceptance are not claimed by isolated tests. Record any macOS security prompt rather than disabling Gatekeeper or deleting security metadata. Do not post private conversations, keys, cookies or bootstrap URLs in public issues.
 
-```bash
-ONCEKEEP_VAULT="$HOME/Library/Mobile Documents/com~apple~CloudDocs/Obsidian/LocalBrain" /bin/bash -c "$(curl -fsSL https://github.com/hpcll/oncekeep-releases/releases/download/v1.8.0-beta.4/install-oncekeep.sh)"
-```
-
-Replace the Vault path if yours differs. Install each Mac separately: the shared Vault has one vault ID and each machine must have a different full device ID. **Never copy config/state, SQLite, spool or the entire installation from another Mac.** Automatic writes are partitioned by device; iCloud timing, real cross-device recall and conflicts still need two-Mac acceptance. Concurrent manual edits to the same ordinary note can still conflict.
-
-## First-run flow
-
-1. Confirm the version, Vault path and service status in the opened local admin page.
-2. Explicitly choose whether to download the local quantized multilingual MiniLM model: **135,392,488 bytes / 129.1 MiB**, with at least 300 MiB free for installation. The page shows progress, verification, loading and retry. No embedding API key or per-use model fee is required.
-3. Until the model is ready, saving/browsing remain available; semantic retrieval and new chunk indexing are unavailable, and keyword retrieval may be incomplete.
-4. Preview discovered Agents, configuration changes and history-import counts. Confirm only the Agents/history you want; restart or trust the connector in the Agent if prompted.
-5. Write a harmless unique marker in one Agent and ask another to find it. Follow the checklist for reboot, backups, isolated restore and two-Mac sync.
-
-Cloud filtering is **optional and disabled by default**. If enabled, it sends the query and limited redacted candidate snippets to your configured provider, which may charge. Redaction does not guarantee the absence of sensitive information. Model downloads contact Hugging Face/CDN for model files, not to send memories. No developer credentials are included.
-
-## Support boundary
-
-- Apple Silicon macOS only; **unsigned and not notarized**.
-- Public engineering beta, not a production-ready claim. Real second-Mac, Agent, iCloud and login/reboot acceptance remain pending.
-- One-line terminal installation is the primary flow. Signing/notarization are follow-up distribution improvements, not a reason to disable macOS protections.
-- If macOS blocks an operation, record the exact prompt. Do not disable Gatekeeper or delete security metadata as a default workaround.
-- Do not post private conversations, API keys, cookies, launcher keys or bootstrap URLs in public issues.
-
-Every release includes `install-oncekeep.sh`, the versioned zip and its `.sha256`. The zip also has four offline `.command` entry points; verify the checksum before using them.
+Every release includes an installer script, versioned zip and matching `.sha256`; four offline `.command` entry points remain in the zip. beta.4 assets are unchanged. Signing/notarization remain follow-up distribution improvements.
 
 Copyright © Oncekeep project owner. No source-code license is granted by this binary download repository.

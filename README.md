@@ -2,15 +2,15 @@
 
 Public engineering-beta downloads for Apple Silicon Macs. The development repository remains private. Bundles contain application runtime code, but no personal Vault, credentials or model weights. **Unsigned and not notarized; real second-Mac acceptance is still pending.**
 
-## One-line installation — v1.8.0-beta.5
+## One-line installation — v1.8.0-beta.6
 
 Enable **iCloud Drive → Sync this Mac** in macOS System Settings and open iCloud Drive in Finder. Run in Terminal as your normal user, **without sudo**:
 
 ```bash
-curl -fsSL https://github.com/hpcll/oncekeep-releases/releases/download/v1.8.0-beta.5/install-oncekeep.sh | bash
+curl -fsSL https://github.com/hpcll/oncekeep-releases/releases/download/v1.8.0-beta.6/install-oncekeep.sh | bash
 ```
 
-[Release notes / downloads](https://github.com/hpcll/oncekeep-releases/releases/tag/v1.8.0-beta.5) · [Second-Mac acceptance checklist](first-user-mac-acceptance.md)
+[Release notes / downloads](https://github.com/hpcll/oncekeep-releases/releases/tag/v1.8.0-beta.6) · [Second-Mac acceptance checklist](first-user-mac-acceptance.md)
 
 **Use this fixed URL. `releases/latest` is still the older stable channel.** No source checkout or preinstalled Node/Python is required.
 
@@ -35,10 +35,14 @@ Upgrading beta.4 or older **does not move its Vault to iCloud**. Upgrade/retaine
 To choose the Documents directory instead of iCloud:
 
 ```bash
-curl -fsSL https://github.com/hpcll/oncekeep-releases/releases/download/v1.8.0-beta.5/install-oncekeep.sh | ONCEKEEP_STORAGE=local bash
+curl -fsSL https://github.com/hpcll/oncekeep-releases/releases/download/v1.8.0-beta.6/install-oncekeep.sh | ONCEKEEP_STORAGE=local bash
 ```
 
 This uses `~/Documents/Oncekeep`; whether Documents syncs depends on macOS settings. For another absolute path, use `ONCEKEEP_VAULT` instead; do not set both options.
+
+## Upgrading from beta.5
+
+Run the same command above. No uninstall or new Vault is needed. Existing memories, identity, location and local models stay in place. beta.6 includes the clearer start page: two status cards, short descriptions, collapsed technical details and **进入我的记忆 / Go to my memories**. Already-configured assistants are not preselected for repeated onboarding. Refresh any old browser tab after upgrading.
 
 ## After installation
 

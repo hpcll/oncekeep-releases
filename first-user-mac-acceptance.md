@@ -35,7 +35,9 @@
 | ID | 操作与判据 | 结果 | 耗时 | 证据/备注 |
 |---|---|---|---|---|
 | M-10 | 一行命令完成安装；不再要求用户输入第二条命令或手动定位解压目录 |  |  |  |
-| M-11 | 默认 Vault 为 `~/Documents/Oncekeep`；输出明确数据位置和 iCloud 多设备写入方式 |  |  |  |
+| M-11 | beta.5 新安装默认 iCloud Drive/Oncekeep；账户/目录不可用时明确停止，不悄悄退回本地，不创建假的 CloudDocs；显式 local/custom 路径另测 |  |  |  |
+| M-11A | 明确区分本地写入和云端上传；在 Finder / 另一台设备独立确认同步完成，不能仅凭本机文件存在标 PASS |  |  |  |
+| M-11B | 既有本地或自定义 Vault 升级后原路径/身份不变，不创建默认 iCloud Vault、不自动搬迁 |  |  |  |
 | M-12 | 安装完成，无 Node/npm/源码依赖报错 |  |  |  |
 | M-13 | `~/Library/LaunchAgents/com.localbrain.daemon.plist` 存在且 root 正确 |  |  |  |
 | M-14 | 自动打开 `/admin/setup` 并成功换取会话，不显示未认证错误 |  |  |  |
